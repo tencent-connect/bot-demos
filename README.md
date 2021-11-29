@@ -7,5 +7,5 @@
 
 ## 示例效果：
 
-![示例效果](https://abc-pcweb-1251316161.file.myqcloud.com/others/demo.jpg)
+![示例效果](https://abc-pcweb-1251316161.file.myqcloud.com/others/sdkdemo.jpg)
 

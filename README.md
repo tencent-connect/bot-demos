@@ -18,3 +18,8 @@ token: "O2AUl44m1mPu4jKVjAwpNtXXXXXXXXXX"
 
 ![示例效果](https://abc-pcweb-1251316161.file.myqcloud.com/others/sdkdemo.jpg)
 
+## 加入官方社区
+
+欢迎扫码加入 **QQ 频道开发者社区**。
+
+<img alt="QQ频道开发者社区" src="https://mpqq.gtimg.cn/privacy-info/qq-guild.png" width="400">

@@ -2,41 +2,40 @@
 
 如下图，点击 [频道机器人开发官网](https://bot.q.qq.com/open) ，在官网页面点击 **立即注册** 
 
-![注册界面](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/ff729f2e-1ce8-4fa7-b364-2be0d2ca18c3.png)
+<img width="1606" alt="ff729f2e-1ce8-4fa7-b364-2be0d2ca18c3" src="https://user-images.githubusercontent.com/33934426/156754545-5f873fa9-68c4-4f07-ae2e-d7085516349e.png">
 
 有两种主体类型，可以根据自己的实际情况进行选择，这里介绍个人开发者的流程，企业详细流程见 [企业主体入驻
 ](https://bot.q.qq.com/wiki/#_2-%E4%BC%81%E4%B8%9A%E4%B8%BB%E4%BD%93%E5%85%A5%E9%A9%BB)
 
-![个人开发者](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/f377e842-b6ef-47f1-8eac-1b88733e9ad8.png)
+<img width="911" alt="f377e842-b6ef-47f1-8eac-1b88733e9ad8" src="https://user-images.githubusercontent.com/33934426/156754613-b18d6a58-52d2-4302-915d-004f6edd3e0f.png">
 
-目前个人开发者还在内测中，需要点击如下图的 [频道机器人个体开发者邀请问卷](https://docs.qq.com/form/page/DSlZjZ0dPc0llT3d0?_w_tencentdocx_form=1#/fill-detail) 就行申请
+目前个人开发者还在内测中，需要点击如下图的 [频道机器人个体开发者邀请问卷](https://docs.qq.com/form/page/DSlZjZ0dPc0llT3d0?_w_tencentdocx_form=1#/fill-detail) 进行申请
 
-![频道机器人个体开发者邀请问卷](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/b93b8cb6-0361-4b58-a2d7-3c456d294076.png)
+<img width="903" alt="b93b8cb6-0361-4b58-a2d7-3c456d294076" src="https://user-images.githubusercontent.com/33934426/156754657-d0ebc699-64b0-4ee4-9dea-358fe837b160.png">
 
 提交完成后，需要等待审核。如果审核通过，就会发送邮件到你的邮箱。
 
-![发送邮件到你的邮箱](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/06eedc81-fee4-4b5f-b862-781dd5ef4bba.png)
+<img width="613" alt="06eedc81-fee4-4b5f-b862-781dd5ef4bba" src="https://user-images.githubusercontent.com/33934426/156754731-5077b76c-3dd2-4138-992b-fed862011f3f.png">
 
 收到邀请码后就可以点击 **下一步** 进入登陆页面
 
-![登陆页面](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/0c627f76-d7c1-4834-9ca8-c2a75cd6306e.png)
+<img width="910" alt="0c627f76-d7c1-4834-9ca8-c2a75cd6306e" src="https://user-images.githubusercontent.com/33934426/156754845-006b7a14-bc37-4a82-9033-fa133c0fd07b.png">
 
 在完成邮箱、手机号等认证后，就可以进入 QQ机器人管理界面，如下图所示：
 
-![QQ机器人管理界面](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/1145ae87-951b-4d55-9f41-7a0d313f73f6.png)
+<img width="1620" alt="1145ae87-951b-4d55-9f41-7a0d313f73f6" src="https://user-images.githubusercontent.com/33934426/156754890-3dc06db0-1c17-49ab-8495-803fc6145b2a.png">
 
 点击 **生成BotAppID** 进入机器人配置界面（如下图）：
 
-![机器人配置界面](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/5e92d587-3e99-45b8-a4ff-13b9cf9b1270.png)
+<img width="1385" alt="adf8c879-dc38-43f1-887a-265ed0db496e" src="https://user-images.githubusercontent.com/33934426/156755041-11c3935f-0e80-4846-acb6-bc04f02e1677.png">
 
 这里面有两个选项需要注意（标红部分）：**沙箱频道ID** 是指你创建频道的ID，需要注意的是，如果你之前创建的频道人数超过限制，就需要创建另一个频道；**机器人类型**有两种，一种是私域机器人，一种是公域机器人。简单来说，私域机器人只能在你自己的频道使用，而公域机器人可以在所有频道使用。
 
 点击 **提交审核** ，审核完成后就能看到如下界面：
 
-![](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/adf8c879-dc38-43f1-887a-265ed0db496e.png)
+<img width="469" alt="5e92d587-3e99-45b8-a4ff-13b9cf9b1270" src="https://user-images.githubusercontent.com/33934426/156755344-91830840-2178-481e-8013-b54e948446a2.png">
 
 点击 **查看详情** 就可以看到你的 `BotAppID` 、`BotToken` 、`BotSecret` 了，**注意这个信息不要泄露**。
-
 
 # Go环境搭建
 
@@ -118,7 +117,7 @@ go get github.com/tencent-connect/botgo
 
 上述步骤完成后就可以使用 `go run robot.go` 命令运行代码。如图，这时在频道内 @机器人 `hello` 指令就可以收到回复了
 
-![]()
+![0f560a5c8eb091e4d0f1563222f530ef](https://user-images.githubusercontent.com/33934426/156755478-07497508-c95c-4013-b725-c4897b85be10.jpg)
 
 # 获取天气数据
 
@@ -219,7 +218,7 @@ func getWeatherByCity(cityName string) *WeatherResp {
 ```
 效果图如下：
 
-![]()
+![554f4a6da7c87723084db5f629109cb6](https://user-images.githubusercontent.com/33934426/156755624-1899dcda-ebf2-4666-8d46-be947dca0aa5.jpg)
 
 # 机器人主动推送消息
 
@@ -344,7 +343,7 @@ go get github.com/robfig/cron
 
 运行该代码，效果如下图
 
-![]()
+![fee0801e89409a951567ebbe7d9c4267](https://user-images.githubusercontent.com/33934426/156756498-d0b43ce2-df7a-4029-a09f-7b95947ac7a5.jpg)
 
 # 机器人指令回复ark消息
 
@@ -520,7 +519,8 @@ func createArkObjArray(weather *WeatherResp) []*dto.ArkObj {
 
 效果如下图：
 
-![]()
+<img width="422" alt="a754879e-7255-4ac3-9c81-247ca556a58d" src="https://user-images.githubusercontent.com/33934426/156756584-8c23eb79-d381-46b9-8470-c30c46d11a16.png">
+
 
 # 机器人指令回复embed消息
 
@@ -725,7 +725,7 @@ func createArkObjArray(weather *WeatherResp) []*dto.ArkObj {
 
 效果如下图
 
-![]()
+<img width="430" alt="8d8c679e-3af8-452f-9e3e-457f699ed012" src="https://user-images.githubusercontent.com/33934426/156756902-749f493f-82f7-4e95-887b-a54d45dcd2e9.png">
 
 # 机器人私信
 
@@ -939,19 +939,18 @@ func createArkObjArray(weather *WeatherResp) []*dto.ArkObj {
 
 效果图如下：
 
-![]()
+![01DDC2277EE8A0EE699C8049E38806A7](https://user-images.githubusercontent.com/33934426/156757976-99464dae-485b-459d-b5b2-dcddbb701746.jpg)
 
 # 使用指令
 
 每次@机器人输入指令太麻烦了，有没有简单的方式呢？机器人提供了指令配置，当你输入`/`时就会产出你配置的指令面板。配置方式如下：
 
-![]()
-
-![]()
+<img width="1364" alt="44579997-4462-4a70-a54a-27e919452c89" src="https://user-images.githubusercontent.com/33934426/156758327-bd196a2a-a412-4a86-a64b-e7969b6aa27f.png">
+<img width="1367" alt="ac4d256d-3e31-4e18-9fd2-5a87e4d550a3" src="https://user-images.githubusercontent.com/33934426/156758368-5fb6496f-2ca6-4872-9997-6ebab0181230.png">
 
 配置好后，当我们输入`/`时，就可以看到配置的面板了
 
-![]()
+<img width="442" alt="150f1d0d-a34b-4c19-ac14-8dea8afe6171" src="https://user-images.githubusercontent.com/33934426/156758394-8f54b0aa-b932-4993-9da7-e26b2abfb9bc.png">
 
 >需要注意，点击指令后输入的内容增加了一个`/`，上面的例子就变成了 `@天气机器人-测试中 /天气`
 

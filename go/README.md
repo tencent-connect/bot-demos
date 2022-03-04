@@ -2,38 +2,38 @@
 
 如下图，点击 [频道机器人开发官网](https://bot.q.qq.com/open) ，在官网页面点击 **立即注册** 
 
-![]()
+![注册界面](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/ff729f2e-1ce8-4fa7-b364-2be0d2ca18c3.png)
 
 有两种主体类型，可以根据自己的实际情况进行选择，这里介绍个人开发者的流程，企业详细流程见 [企业主体入驻
 ](https://bot.q.qq.com/wiki/#_2-%E4%BC%81%E4%B8%9A%E4%B8%BB%E4%BD%93%E5%85%A5%E9%A9%BB)
 
-![]()
+![个人开发者](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/f377e842-b6ef-47f1-8eac-1b88733e9ad8.png)
 
 目前个人开发者还在内测中，需要点击如下图的 [频道机器人个体开发者邀请问卷](https://docs.qq.com/form/page/DSlZjZ0dPc0llT3d0?_w_tencentdocx_form=1#/fill-detail) 就行申请
 
-![]()
+![频道机器人个体开发者邀请问卷](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/b93b8cb6-0361-4b58-a2d7-3c456d294076.png)
 
 提交完成后，需要等待审核。如果审核通过，就会发送邮件到你的邮箱。
 
-![]()
+![发送邮件到你的邮箱](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/06eedc81-fee4-4b5f-b862-781dd5ef4bba.png)
 
 收到邀请码后就可以点击 **下一步** 进入登陆页面
 
-![]()
+![登陆页面](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/0c627f76-d7c1-4834-9ca8-c2a75cd6306e.png)
 
 在完成邮箱、手机号等认证后，就可以进入 QQ机器人管理界面，如下图所示：
 
-![]()
+![QQ机器人管理界面](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/1145ae87-951b-4d55-9f41-7a0d313f73f6.png)
 
 点击 **生成BotAppID** 进入机器人配置界面（如下图）：
 
-![]()
+![机器人配置界面](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/5e92d587-3e99-45b8-a4ff-13b9cf9b1270.png)
 
 这里面有两个选项需要注意（标红部分）：**沙箱频道ID** 是指你创建频道的ID，需要注意的是，如果你之前创建的频道人数超过限制，就需要创建另一个频道；**机器人类型**有两种，一种是私域机器人，一种是公域机器人。简单来说，私域机器人只能在你自己的频道使用，而公域机器人可以在所有频道使用。
 
 点击 **提交审核** ，审核完成后就能看到如下界面：
 
-![]()
+![](https://github.com/lichukuan/bot-demos/blob/personal/add_go_demo/images/adf8c879-dc38-43f1-887a-265ed0db496e.png)
 
 点击 **查看详情** 就可以看到你的 `BotAppID` 、`BotToken` 、`BotSecret` 了，**注意这个信息不要泄露**。
 

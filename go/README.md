@@ -77,6 +77,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -90,16 +91,15 @@ func main() {
 	token := token.BotToken(你的appid, "你的token")
 	api := botgo.NewOpenAPI(token).WithTimeout(3 * time.Second)
 	ctx := context.Background()
-	ws, err := api.WS(ctx, nil, "")
-	log.Printf("%+v, err:%v", ws, err)
+	ws, err := api.WS(ctx, nil, "") //websocket
 	if err != nil {
 		log.Printf("%+v, err:%v", ws, err)
+		os.Exit(1)
 	}
 
 	var atMessage websocket.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
 
-		// 发被动消息到频道
-		if strings.HasSuffix(data.Content, "> hello") { // 如果at机器人并输入 hello 则回复 Hello World 。
+		if strings.HasSuffix(data.Content, "> hello") { // 如果at机器人并输入 hello 则回复 你好。
 			api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID, Content: "你好"})
 		}
 		return nil
@@ -120,9 +120,110 @@ go get github.com/tencent-connect/botgo
 
 ![]()
 
-# 机器人指令回复ark消息
+# 获取天气数据
 
-提供给个人开发者的`Ark`有3种，这里使用 23 号`Ark`。其它`Ark`见[消息模板](https://bot.q.qq.com/wiki/develop/api/openapi/message/message_template.html)
+天气机器人最重要的就是提供天气的数据，这里是使用的 `https://www.nowapi.com/api/weather.today` 的Api。代码如下：
+
+```
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"github.com/tencent-connect/botgo"
+	"github.com/tencent-connect/botgo/dto"
+	"github.com/tencent-connect/botgo/token"
+	"github.com/tencent-connect/botgo/websocket"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+)
+
+//WeatherResp 定义了返回天气数据的结构
+type WeatherResp struct {
+	Success    string `json:"success"` //标识请求是否成功，0表示成功，1表示失败
+	ResultData Result `json:"result"`  //请求成功时，获取的数据
+	Msg        string `json:"msg"`     //请求失败时，失败的原因
+}
+
+//Result 定义了具体天气数据结构
+type Result struct {
+	Days            string `json:"days"`             //日期，例如2022-03-01
+	Week            string `json:"week"`             //星期几
+	CityNm          string `json:"citynm"`           //城市名
+	Temperature     string `json:"temperature"`      //当日温度区间
+	TemperatureCurr string `json:"temperature_curr"` //当前温度
+	Humidity        string `json:"humidity"`         //湿度
+	Weather         string `json:"weather"`          //天气情况
+	Wind            string `json:"wind"`             //风向
+	Winp            string `json:"winp"`             //风力
+	TempHigh        string `json:"temp_high"`        //最高温度
+	TempLow         string `json:"temp_low"`         //最低温度
+	WeatherIcon     string `json:"weather_icon"`     //气象图标
+}
+
+func main() {
+	token := token.BotToken(你的appid, "你的token")
+	api := botgo.NewOpenAPI(token).WithTimeout(3 * time.Second)
+	ctx := context.Background()
+	ws, err := api.WS(ctx, nil, "") //websocket
+	if err != nil {
+		log.Fatalln("websocket错误， err = ", err)
+		os.Exit(1)
+	}
+	
+	var atMessage websocket.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
+		if strings.HasSuffix(data.Content, "> hello") {
+			weatherData := getWeatherByCity("深圳")
+			api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID,
+				Content: weatherData.ResultData.CityNm + " " + weatherData.ResultData.Weather + " " + weatherData.ResultData.Days + " " + weatherData.ResultData.Week,
+				Image: weatherData.ResultData.WeatherIcon,//天气图片
+			})
+		}
+		return nil
+	}
+
+	intent := websocket.RegisterHandlers(atMessage)     // 注册socket消息处理
+	botgo.NewSessionManager().Start(ws, token, &intent) // 启动socket监听
+}
+
+//获取对应城市的天气数据
+func getWeatherByCity(cityName string) *WeatherResp {
+	url := "http://api.k780.com/?app=weather.today&cityNm=" + cityName + "&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json"
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatalln("天气预报接口请求异常, err = ", err)
+		return nil
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln("天气预报接口数据异常, err = ", err)
+		return nil
+	}
+	var weatherData WeatherResp
+	err = json.Unmarshal(body, &weatherData)
+	if err != nil {
+		log.Fatalln("解析数据异常 err = ", err, body)
+		return nil
+	}
+	if weatherData.Success != "1" {
+		log.Fatalln("返回数据问题 err = ", weatherData.Msg)
+		return nil
+	}
+	return &weatherData
+}
+```
+效果图如下：
+
+![]()
+
+# 机器人主动推送消息
+
+上面的教程只实现一个简单的获取天气的功能，但是我们做的是天气机器人，希望实现一个报告天气的功能。一般的天气应用都会在一个特定时间给你推送天气通知，在频道机器人中，你可以通过主动消息来实现这个功能。代码如下：
 
 ```
 package main
@@ -138,30 +239,34 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
 
-var channelId = ""
+var channelId = "" //保存子频道的id
 
+//WeatherResp 定义了返回天气数据的结构
 type WeatherResp struct {
-	Success string `json:"success"`
-	ResultData Result `json:"result"`
-	Msg string `json:"msg"`
+	Success    string `json:"success"` //标识请求是否成功，0表示成功，1表示失败
+	ResultData Result `json:"result"`  //请求成功时，获取的数据
+	Msg        string `json:"msg"`     //请求失败时，失败的原因
 }
 
+//Result 定义了具体天气数据结构
 type Result struct {
-	Days string `json:"days"`
-	Week string `json:"week"`
-	CityNm string `json:"citynm"`
-	Temperature string `json:"temperature"`
-	TemperatureCurr string `json:"temperature_curr"`
-	Humidity string `json:"humidity"`
-	Weather string `json:"weather"`
-	Wind string `json:"wind"`
-	Winp string `json:"winp"`
-	TempHigh string `json:"temp_high"`
-	TempLow string `json:"temp_low"`
+	Days            string `json:"days"`             //日期，例如2022-03-01
+	Week            string `json:"week"`             //星期几
+	CityNm          string `json:"citynm"`           //城市名
+	Temperature     string `json:"temperature"`      //当日温度区间
+	TemperatureCurr string `json:"temperature_curr"` //当前温度
+	Humidity        string `json:"humidity"`         //湿度
+	Weather         string `json:"weather"`          //天气情况
+	Wind            string `json:"wind"`             //风向
+	Winp            string `json:"winp"`             //风力
+	TempHigh        string `json:"temp_high"`        //最高温度
+	TempLow         string `json:"temp_low"`         //最低温度
+	WeatherIcon     string `json:"weather_icon"`     //气象图标
 }
 
 func main() {
@@ -169,10 +274,133 @@ func main() {
 	api := botgo.NewOpenAPI(token).WithTimeout(3 * time.Second)
 	ctx := context.Background()
 	timer := cron.New()
-	ws, err := api.WS(ctx, nil, "")
-	log.Printf("%+v, err:%v", ws, err)
+	ws, err := api.WS(ctx, nil, "") //websocket
+	if err != nil {
+		log.Fatalln("websocket错误， err = ", err)
+		os.Exit(1)
+	}
+
+	var activeMsgPush = func() {
+		if channelId != "" {
+			//MsgID 为空字符串表示主动消息
+			api.PostMessage(ctx, channelId, &dto.MessageToCreate{MsgID: "", Content: "当前天气是：晴天"})
+		}
+	}
+	//cron表达式由6部分组成，从左到右分别表示 秒 分 时 日 月 星期
+	//*表示任意值  ？表示不确定值，只能用于星期和日
+	//这里表示每天15:53分发送消息
+	timer.AddFunc("0 53 15 * * ?", activeMsgPush) 
+	timer.Start()
+
+	var atMessage websocket.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
+		channelId = data.ChannelID
+		if strings.HasSuffix(data.Content, "> hello") {
+			weatherData := getWeatherByCity("深圳")
+			api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID,
+				Content: weatherData.ResultData.CityNm + " " + weatherData.ResultData.Weather + " " + weatherData.ResultData.Days + " " + weatherData.ResultData.Week,
+				Image:   weatherData.ResultData.WeatherIcon, //天气图片
+			})
+		}
+		return nil
+	}
+
+	intent := websocket.RegisterHandlers(atMessage)     // 注册socket消息处理
+	botgo.NewSessionManager().Start(ws, token, &intent) // 启动socket监听
+}
+
+//获取对应城市的天气数据
+func getWeatherByCity(cityName string) *WeatherResp {
+	url := "http://api.k780.com/?app=weather.today&cityNm=" + cityName + "&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json"
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatalln("天气预报接口请求异常, err = ", err)
+		return nil
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalln("天气预报接口数据异常, err = ", err)
+		return nil
+	}
+	var weatherData WeatherResp
+	err = json.Unmarshal(body, &weatherData)
+	if err != nil {
+		log.Fatalln("解析数据异常 err = ", err, body)
+		return nil
+	}
+	if weatherData.Success != "1" {
+		log.Fatalln("返回数据问题 err = ", weatherData.Msg)
+		return nil
+	}
+	return &weatherData
+}
+```
+
+由于在代码使用了 `cron` 来实现定时功能，需要下载对应的依赖。
+
+```
+go get github.com/robfig/cron
+```
+
+运行该代码，效果如下图
+
+![]()
+
+# 机器人指令回复ark消息
+
+提供给个人开发者的`Ark`有3种，这里使用 23 号`Ark`。其它`Ark`见[消息模板](https://bot.q.qq.com/wiki/develop/api/openapi/message/message_template.html)
+
+```go
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"github.com/robfig/cron"
+	"github.com/tencent-connect/botgo"
+	"github.com/tencent-connect/botgo/dto"
+	"github.com/tencent-connect/botgo/token"
+	"github.com/tencent-connect/botgo/websocket"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+)
+
+var channelId = "" //保存子频道的id
+
+type WeatherResp struct {
+	Success    string `json:"success"` //标识请求是否成功，0表示成功，1表示失败
+	ResultData Result `json:"result"`  //请求成功时，获取的数据
+	Msg        string `json:"msg"`     //请求失败时，失败的原因
+}
+
+type Result struct {
+	Days            string `json:"days"`             //日期，例如2022-03-01
+	Week            string `json:"week"`             //星期几
+	CityNm          string `json:"citynm"`           //城市名
+	Temperature     string `json:"temperature"`      //当日温度区间
+	TemperatureCurr string `json:"temperature_curr"` //当前温度
+	Humidity        string `json:"humidity"`         //湿度
+	Weather         string `json:"weather"`          //天气情况
+	Wind            string `json:"wind"`             //风向
+	Winp            string `json:"winp"`             //风力
+	TempHigh        string `json:"temp_high"`        //最高温度
+	TempLow         string `json:"temp_low"`         //最低温度
+	WeatherIcon     string `json:"weather_icon"`     //气象图标
+}
+
+func main() {
+	token := token.BotToken(你的appid, "你的token")
+	api := botgo.NewOpenAPI(token).WithTimeout(3 * time.Second)
+	ctx := context.Background()
+	timer := cron.New()
+	ws, err := api.WS(ctx, nil, "")//websocket
 	if err != nil {
 		log.Printf("%+v, err:%v", ws, err)
+		os.Exit(1)
 	}
 
 	var activeMsgPush = func() {
@@ -182,13 +410,11 @@ func main() {
 		}
 	}
 
-	timer.AddFunc("0 0 9 * * ?", activeMsgPush)//每天九点发送消息
+	timer.AddFunc("0 0 9 * * ?", activeMsgPush) //每天九点发送消息
 	timer.Start()
 
 	var atMessage websocket.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
-
 		channelId = data.ChannelID
-		// 发被动消息到频道
 		if strings.HasSuffix(data.Content, "> hello") {
 			api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID, Content: "你好"})
 		}
@@ -200,7 +426,7 @@ func main() {
 }
 
 func getWeatherByCity(cityName string) *WeatherResp {
-	url := "http://api.k780.com/?app=weather.today&cityNm="+ cityName +"&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json"
+	url := "http://api.k780.com/?app=weather.today&cityNm=" + cityName + "&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json"
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatalln("天气预报接口请求异常, err = ", err)
@@ -226,18 +452,18 @@ func getWeatherByCity(cityName string) *WeatherResp {
 func createArkForTemplate23(weather *WeatherResp) *dto.Ark {
 	return &dto.Ark{
 		TemplateID: 23,
-		KV: createArkKvArray(weather),
+		KV:         createArkKvArray(weather),
 	}
 }
 
 func createArkKvArray(weather *WeatherResp) []*dto.ArkKV {
 	akvArray := make([]*dto.ArkKV, 3)
 	akvArray[0] = &dto.ArkKV{
-		Key: "#DESC#",
+		Key:   "#DESC#",
 		Value: "描述",
 	}
 	akvArray[1] = &dto.ArkKV{
-		Key: "#PROMPT#",
+		Key:   "#PROMPT#",
 		Value: "#PROMPT#",
 	}
 	akvArray[2] = &dto.ArkKV{
@@ -251,14 +477,14 @@ func createArkObjArray(weather *WeatherResp) []*dto.ArkObj {
 	objectArray := make([]*dto.ArkObj, 7)
 	objectArkArray := make([]*dto.ArkObjKV, 1)
 	objectArkArray[0] = &dto.ArkObjKV{
-		Key: "desc",
+		Key:   "desc",
 		Value: weather.ResultData.Days + " " + weather.ResultData.Week,
 	}
 	objectArray = []*dto.ArkObj{
 		{
 			[]*dto.ArkObjKV{
 				{
-					Key: "desc",
+					Key:   "desc",
 					Value: weather.ResultData.CityNm + " " + weather.ResultData.Weather + " " + weather.ResultData.Days + " " + weather.ResultData.Week,
 				},
 			},
@@ -266,7 +492,7 @@ func createArkObjArray(weather *WeatherResp) []*dto.ArkObj {
 		{
 			[]*dto.ArkObjKV{
 				{
-					Key: "desc",
+					Key:   "desc",
 					Value: "当日温度区间：" + weather.ResultData.Temperature,
 				},
 			},
@@ -274,7 +500,7 @@ func createArkObjArray(weather *WeatherResp) []*dto.ArkObj {
 		{
 			[]*dto.ArkObjKV{
 				{
-					Key: "desc",
+					Key:   "desc",
 					Value: "当前温度：" + weather.ResultData.TemperatureCurr,
 				},
 			},
@@ -282,7 +508,7 @@ func createArkObjArray(weather *WeatherResp) []*dto.ArkObj {
 		{
 			[]*dto.ArkObjKV{
 				{
-					Key: "desc",
+					Key:   "desc",
 					Value: "当前湿度：" + weather.ResultData.Humidity,
 				},
 			},
@@ -769,17 +995,20 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+//Config 定义了配置文件的结构
 type Config struct {
 	AppID uint64 `yaml:"appid"` //机器人的appid
 	Token string `yaml:"token"` //机器人的token
 }
 
+//WeatherResp 定义了返回天气数据的结构
 type WeatherResp struct {
 	Success    string `json:"success"` //标识请求是否成功，0表示成功，1表示失败
 	ResultData Result `json:"result"`  //请求成功时，获取的数据
 	Msg        string `json:"msg"`     //请求失败时，失败的原因
 }
 
+//Result 定义了具体天气数据结构
 type Result struct {
 	Days            string `json:"days"`             //日期，例如2022-03-01
 	Week            string `json:"week"`             //星期几
@@ -860,7 +1089,7 @@ func atMessageEventHandler(event *dto.WSPayload, data *dto.WSATMessageData) erro
 		if webData != nil {
 			//MsgID 表示这条消息的触发来源，如果为空字符串表示主动消息
 			//Ark 传入数据时表示发送的消息是Ark
-			api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID, Ark: createArkForTemplate23(webData)})
+			api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID, Embed: createEmbed(webData)})
 		}
 	} else if strings.HasSuffix(data.Content, CommandBeiJin) { //发送北京的天气消息到频道
 		var webData *WeatherResp = getWeatherByCity(CityBeiJin)
@@ -955,7 +1184,8 @@ func createEmbed(weather *WeatherResp) *dto.Embed {
 				Name: weather.ResultData.Days + " " + weather.ResultData.Week,
 			},
 			{
-				Name: "当日温度区间：" + weather.ResultData.Temperature,
+				Name:  "当日温度区间：" + weather.ResultData.Temperature,
+				Value: "test",
 			},
 			{
 				Name: "当前温度：" + weather.ResultData.TemperatureCurr,
@@ -967,7 +1197,11 @@ func createEmbed(weather *WeatherResp) *dto.Embed {
 				Name: "最低温度：" + weather.ResultData.TempLow,
 			},
 			{
-				Name: "当前湿度：" + weather.ResultData.Humidity,
+				Name:  "当前湿度：" + weather.ResultData.Humidity,
+				Value: "https://bot.q.qq.com/wiki/develop/api/openapi/message/template/embed_message.html",
+			},
+			{
+				Value: "test1",
 			},
 		},
 	}

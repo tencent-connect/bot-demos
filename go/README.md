@@ -2,12 +2,12 @@
 * 1. [开发前的准备](#)
 * 2. [Go环境搭建](#Go)
 * 3. [机器人自动回复普通消息](#-1)
-* 4. [获取天气数据](#-1)
-* 5. [机器人主动推送消息](#-1)
+* 4. [获取天气数据](#-2)
+* 5. [机器人主动推送消息](#-3)
 * 6. [机器人指令回复ark消息](#ark)
-* 7. [机器人私信](#-1)
-* 8. [使用指令](#-1)
-* 9. [最佳实践](#-1)
+* 7. [机器人私信](#-4)
+* 8. [使用指令](#-5)
+* 9. [最佳实践](#-6)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -135,7 +135,7 @@ go get github.com/tencent-connect/botgo
 
 ![0f560a5c8eb091e4d0f1563222f530ef](https://user-images.githubusercontent.com/33934426/156755478-07497508-c95c-4013-b725-c4897b85be10.jpg)
 
-##  4. <a name='-1'></a>获取天气数据
+##  4. <a name='-2'></a>获取天气数据
 
 天气机器人最重要的就是提供天气的数据，这里是使用的 `https://www.nowapi.com/api/weather.today` 的Api。
 
@@ -223,7 +223,7 @@ var atMessage websocket.ATMessageEventHandler = func(event *dto.WSPayload, data 
 
 ![554f4a6da7c87723084db5f629109cb6](https://user-images.githubusercontent.com/33934426/156755624-1899dcda-ebf2-4666-8d46-be947dca0aa5.jpg)
 
-##  5. <a name='-1'></a>机器人主动推送消息
+##  5. <a name='-3'></a>机器人主动推送消息
 
 上面的教程只实现一个简单的获取天气的功能，但是我们做的是天气机器人，希望实现一个报告天气的功能。一般的天气应用都会在一个特定时间给你推送天气通知，在频道机器人中，你可以通过主动消息来实现这个功能。代码如下：
 
@@ -364,7 +364,7 @@ func createArkObjArray(weather *WeatherResp) []*dto.ArkObj {
 
 <img width="422" alt="a754879e-7255-4ac3-9c81-247ca556a58d" src="https://user-images.githubusercontent.com/33934426/156756584-8c23eb79-d381-46b9-8470-c30c46d11a16.png">
 
-##  7. <a name='-1'></a>机器人私信
+##  7. <a name='-4'></a>机器人私信
 
 我们希望能提供不同用户不同地方的天气，但是发太多的消息会影响其它的用户。针对这种情况，我们可以通过私信来实现。下面代码中，当我们@机器人hello时收到机器人的私信。
 
@@ -438,7 +438,7 @@ func main() {
 
 ![01DDC2277EE8A0EE699C8049E38806A7](https://user-images.githubusercontent.com/33934426/156757976-99464dae-485b-459d-b5b2-dcddbb701746.jpg)
 
-##  8. <a name='-1'></a>使用指令
+##  8. <a name='-5'></a>使用指令
 
 每次@机器人输入指令太麻烦了，有没有简单的方式呢？机器人提供了指令配置，当你输入`/`时就会产出你配置的指令面板。配置方式如下：
 
@@ -451,7 +451,7 @@ func main() {
 
 >需要注意，点击指令后输入的内容增加了一个`/`，上面的例子就变成了 `@天气机器人-测试中 /天气`
 
-##  9. <a name='-1'></a>最佳实践
+##  9. <a name='-6'></a>最佳实践
 
 创建`config.yaml`文件保存配置信息，代码如下：
 

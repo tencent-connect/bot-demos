@@ -3,10 +3,12 @@
 import asyncio
 import json
 import os.path
+import threading
 from typing import Dict, List
 
 import aiohttp
 import qqbot
+
 from qqbot.core.util.yaml_util import YamlUtil
 from qqbot.model.message import MessageEmbed, MessageEmbedField, MessageEmbedThumbnail, CreateDirectMessageRequest, \
     MessageArk, MessageArkKv, MessageArkObj, MessageArkObjKv
@@ -223,6 +225,29 @@ async def get_weather(city_name: str) -> Dict:
             return content_json_obj
 
 
+async def send_weather_message_by_time():
+    """
+    任务描述：每天推送一次普通天气消息
+    """
+    # 获取天气数据
+    weather_dict = await get_weather("深圳")
+    # 获取频道列表都取首个频道的首个子频道推送
+    user_api = qqbot.AsyncUserAPI(t_token, False)
+    guilds = await user_api.me_guilds()
+    guilds_id = guilds[0].id
+    channel_api = qqbot.AsyncChannelAPI(t_token, False)
+    channels = await channel_api.get_channels(guilds_id)
+    channels_id = channels[0].id
+    # 推送消息
+    temperature = "当日温度区间：" + weather_dict['result']['temperature']
+    send = qqbot.MessageSendRequest(content=temperature)
+    msg_api = qqbot.AsyncMessageAPI(t_token, False)
+    await msg_api.post_message(channels_id, send)
+    # 如果需要每天都执行，加上下面两句
+    t = threading.Timer(86400, send_weather_message_by_time)
+    t.start()
+
+
 # async的异步接口的使用示例
 if __name__ == "__main__":
     t_token = qqbot.Token(test_config["token"]["appid"], test_config["token"]["token"])
@@ -233,3 +258,4 @@ if __name__ == "__main__":
     qqbot.async_listen_events(t_token, False, qqbot_handler)
 
     # 定时推送主动消息
+    send_weather_message_by_time()

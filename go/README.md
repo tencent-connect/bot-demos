@@ -55,6 +55,8 @@
 
 ##  2. <a name='Go'></a>Go环境搭建
 
+### linux
+
 在命令行输入如下命令来下载 `Go` 语言压缩包
 
 ```
@@ -82,9 +84,45 @@ cd demo
 go mod init demo
 ```
 
+### mac
+
+在[Go官网](https://go.dev/dl/)下载需要的mac的版本。下载完成后，直接双击运行下载好的pkg，在弹出的安装页面直接安装就行了。在命令行输入 `go version` 指令检验是否安装完成，如果安装成功，会打印出 `Go` 的版本号。
+
+```
+% go version
+go version go1.17.7 darwin/arm64
+```
+
+在命令行使用下面命令创建一个 `demo` 项目，并初始化
+
+```
+mkdir demo
+cd demo
+go mod init demo
+```
+
+### windows
+
+在[Go官网](https://go.dev/dl/)下载需要的windows的版本。下载完成后，直接双击运行下载好的安装包，在弹出的安装页面直接安装就行了。在命令行输入 `go version` 指令检验是否安装完成，如果安装成功，会打印出 `Go` 的版本号。
+
+```
+>go version
+go version go1.17.7 windows/arm64
+```
+
+在命令行使用下面命令创建一个 `demo` 项目，并初始化
+
+```
+mkdir demo
+cd demo
+go mod init demo
+```
+
 ##  3. <a name='-1'></a>机器人自动回复普通消息
 
-使用 `mkdir robot.go` 创建一个 `robot.go` 的文件。使用 `vim robot.go` 编辑`robot.go` 文件，键盘输入 `i` ,把文件变成可编辑状态，复制粘贴下面代码。`esc` 键退出，键盘输入 `:wq` 保持退出。
+在Linux和mac上你需要使用 `touch robot.go` 创建一个 `robot.go` 的文件。使用 `vim robot.go` 编辑`robot.go` 文件，键盘输入 `i` ,把文件变成可编辑状态，复制粘贴下面代码。`esc` 键退出，键盘输入 `:wq` 保持退出。
+
+在windows上，你可以右键-->创建txt文件-->重命名为`robot.go`。使用文本编辑器打开文件，并复制粘贴下面的代码，`ctrl+s`保存文件。
 
 ```go
 package main

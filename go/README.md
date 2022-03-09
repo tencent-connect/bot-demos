@@ -322,7 +322,7 @@ func createArkKvArray(weather *WeatherResp) []*dto.ArkKV {
 
 //创建ArkKV需要的ArkObj数组
 func createArkObjArray(weather *WeatherResp) []*dto.ArkObj {
-	objectArray = []*dto.ArkObj{
+	objectArray := []*dto.ArkObj{
 		{
 			[]*dto.ArkObjKV{
 				{
@@ -475,18 +475,20 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/robfig/cron"
-	"github.com/tencent-connect/botgo"
-	"github.com/tencent-connect/botgo/dto"
-	"github.com/tencent-connect/botgo/openapi"
-	"github.com/tencent-connect/botgo/token"
-	"github.com/tencent-connect/botgo/websocket"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/robfig/cron"
+	"github.com/tencent-connect/botgo"
+	"github.com/tencent-connect/botgo/dto"
+	"github.com/tencent-connect/botgo/dto/message"
+	"github.com/tencent-connect/botgo/openapi"
+	"github.com/tencent-connect/botgo/token"
+	"github.com/tencent-connect/botgo/websocket"
 
 	yaml "gopkg.in/yaml.v2"
 )
@@ -524,15 +526,11 @@ const (
 	ConfigPath       = "config.yaml"  //配置文件名
 	GuildCreateEvent = "GUILD_CREATE" //机器人被加入到某个频道的事件
 
-	CommandShenZhen          = "> /深圳"
-	CommandShangHai          = "> /上海"
-	CommandBeiJin            = "> /北京"
-	CommandDirectChatMsg     = "> /私信推送"
-	CommandWeatherProgrammer = "> /全国天气小程序"
-
-	CityShenZhen = "深圳"
-	CityShangHai = "上海"
-	CityBeiJin   = "北京"
+	CommandShenZhen          = "深圳"
+	CommandShangHai          = "上海"
+	CommandBeiJin            = "北京"
+	CommandDirectChatMsg     = "私信推送"
+	CommandWeatherProgrammer = "全国天气小程序"
 )
 
 var config Config
@@ -561,7 +559,7 @@ func main() {
 	ctx = context.Background()
 	ws, err := api.WS(ctx, nil, "") //websocket
 	if err != nil {
-		log.Printf("%+v, err:%v", ws, err)
+		log.Fatalln("websocket错误， err = ", err)
 		os.Exit(1)
 	}
 
@@ -580,25 +578,21 @@ func main() {
 
 //处理 @机器人 的消息
 func atMessageEventHandler(event *dto.WSPayload, data *dto.WSATMessageData) error {
-	if strings.HasSuffix(data.Content, CommandShenZhen) { //发送深圳的天气消息到频道
-		var webData *WeatherResp = getWeatherByCity(CityShenZhen)
+	res := message.ETLInput(data.Content) //去掉@结构和清除前后空格
+	if strings.HasPrefix(res, "/") {      //去掉/
+		res = strings.Replace(res, "/", "", 1)
+	}
+	
+	switch res {
+	case CommandShenZhen, CommandBeiJin, CommandShangHai:
+		var webData *WeatherResp = getWeatherByCity(res)
 		if webData != nil {
 			//MsgID 表示这条消息的触发来源，如果为空字符串表示主动消息
 			//Ark 传入数据时表示发送的消息是Ark
-			api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID, Embed: createEmbed(webData)})
-		}
-	} else if strings.HasSuffix(data.Content, CommandBeiJin) { //发送北京的天气消息到频道
-		var webData *WeatherResp = getWeatherByCity(CityBeiJin)
-		if webData != nil {
 			api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID, Ark: createArkForTemplate23(webData)})
 		}
-	} else if strings.HasSuffix(data.Content, CommandShangHai) { //发送上海的天气消息到频道
-		var webData *WeatherResp = getWeatherByCity(CityShangHai)
-		if webData != nil {
-			api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID, Ark: createArkForTemplate23(webData)})
-		}
-	} else if strings.HasSuffix(data.Content, CommandDirectChatMsg) { //私信深圳的天气消息到用户
-		var webData *WeatherResp = getWeatherByCity(CityShenZhen)
+	case CommandDirectChatMsg: //私信深圳的天气消息到用户
+		var webData *WeatherResp = getWeatherByCity(CommandShenZhen)
 		if webData != nil {
 			//创建私信会话
 			directMsg, err := api.CreateDirectMessage(ctx, &dto.DirectMessageToCreate{
@@ -612,7 +606,7 @@ func atMessageEventHandler(event *dto.WSPayload, data *dto.WSATMessageData) erro
 			//Embed 传入数据时表示发送的是 Embed
 			api.PostDirectMessage(ctx, directMsg, &dto.MessageToCreate{Embed: createEmbed(webData)})
 		}
-	} else if strings.HasSuffix(data.Content, CommandWeatherProgrammer) {
+	case CommandWeatherProgrammer:
 
 	}
 	return nil
@@ -626,7 +620,7 @@ func timerHandler() {
 			log.Println("获取频道的信息出错，err = ", err)
 			return
 		}
-		var webData *WeatherResp = getWeatherByCity(CityShenZhen)
+		var webData *WeatherResp = getWeatherByCity(CommandShenZhen)
 		//发送主动消息
 		api.PostMessage(ctx, channels[2].ID, &dto.MessageToCreate{MsgID: "", Ark: createArkForTemplate23(webData)})
 	}
@@ -692,13 +686,6 @@ func createEmbed(weather *WeatherResp) *dto.Embed {
 			{
 				Name: "最低温度：" + weather.ResultData.TempLow,
 			},
-			{
-				Name:  "当前湿度：" + weather.ResultData.Humidity,
-				Value: "https://bot.q.qq.com/wiki/develop/api/openapi/message/template/embed_message.html",
-			},
-			{
-				Value: "test1",
-			},
 		},
 	}
 }
@@ -731,7 +718,7 @@ func createArkKvArray(weather *WeatherResp) []*dto.ArkKV {
 
 //创建ArkKV需要的ArkObj数组
 func createArkObjArray(weather *WeatherResp) []*dto.ArkObj {
-	objectArray = []*dto.ArkObj{
+	objectArray := []*dto.ArkObj{
 		{
 			[]*dto.ArkObjKV{
 				{

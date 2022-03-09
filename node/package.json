@@ -1,11 +1,11 @@
 {
   "name": "weather-robot",
   "version": "1.0.0",
-  "main": "./src/index.ts",
+  "main": "./index.ts",
   "author": "Next",
   "license": "MIT",
   "scripts": {
-    "dev": "npx nodemon ./src/index.ts"
+    "dev": "npx nodemon ./index.ts"
   },
   "dependencies": {
     "axios": "^0.26.0",

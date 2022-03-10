@@ -123,7 +123,7 @@ mkdir demo
 cd demo
 ```
 
-接着，在`demo`文件夹下创建名为 `config.yaml` 的配置文件，填入自己的 `BotAppID` 和 `Bot token`，内容类似下面所示。 也可直接下载 github 仓库里的`config.example.yaml` 文件，然后自己修改后缀名和内容
+接着，在`demo`文件夹下创建名为 `config.yaml` 的配置文件，填入自己的 `BotAppID` 和 `Bot token`，内容类似下面所示。 也可直接下载 github 仓库里的 `config.example.yaml` 文件，然后自己修改后缀名和内容
 
     ``` bash
     token:
@@ -131,16 +131,16 @@ cd demo
     token: "xxxx"
     ```
 
-接着，在`demo`文件夹下创建一个名为 `robot.py` 的文件：
+接着，在 `demo` 文件夹下创建一个名为 `robot.py` 的文件：
 
 - 在Linux和mac上，你需要使用 `touch robot.py` 创建一个名为 `robot.py` 的文件。
-- 在windows上，你可以右键-->创建txt文件-->重命名为`robot.py`
+- 在windows上，你可以右键-->创建txt文件-->重命名为 `robot.py`
 
 最后，打开 `python` 文件，在开头导入相关的包：
 
 在Linux和mac上你需要使用 `vim robot.py` 编辑`robot.py` 文件，键盘输入 `i` ,把文件变成可编辑状态，复制粘贴下面代码。`esc` 键退出，键盘输入 `:wq` 保持退出。
 
-在windows上，你需要使用文本编辑器打开文件，并复制粘贴下面的代码，`ctrl+s`保存文件。
+在windows上，你需要使用文本编辑器打开文件，并复制粘贴下面的代码，`ctrl+s` 保存文件。
 
 ```Python
 import asyncio
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     qqbot.async_listen_events(t_token, False, qqbot_handler)
 ```
 
-保存完代码，在命令行输入 `python3 robot.py` 运行机器人。 这时在频道内 @机器人 `hello` 指令就可以收到回复了
+保存完代码，在命令行输入`python3 robot.py`运行机器人。 这时在频道内 @机器人`hello`指令就可以收到回复了
 
 ![0f560a5c8eb091e4d0f1563222f530ef](https://user-images.githubusercontent.com/33934426/156755478-07497508-c95c-4013-b725-c4897b85be10.jpg)
 
@@ -250,7 +250,7 @@ async def get_weather(city_name: str) -> Dict:
             return content_json_obj
 ```
 
-然后，修改 `_message_handler`函，调用 `get_weather` 函数并发送天气
+然后，修改`_message_handler`函，调用`get_weather`函数并发送天气
 
 ```python
 async def _message_handler(event, message: qqbot.Message):
@@ -302,7 +302,7 @@ async def send_weather_message_by_time():
     t.start()
 ```
 
-在 `__main__` 中添加执行 `send_weather_message_by_time()` 的语句
+在`__main__`中添加执行`send_weather_message_by_time()`的语句
 
 ```python
 if __name__ == "__main__":
@@ -351,7 +351,7 @@ async def send_weather_ark_message(weather_dict, channel_id, message_id):
     await msg_api.post_message(channel_id, send)
 ```
 
-再修改 `_message_handler`函数发送ark
+再修改`_message_handler`函数发送ark
 
 ```python
 async def _message_handler(event, message: qqbot.Message):
@@ -372,7 +372,7 @@ async def _message_handler(event, message: qqbot.Message):
 
 我们希望能提供不同用户不同地方的天气，但是发太多的消息会影响其它的用户。针对这种情况，我们可以通过私信来实现。下面代码中，当我们@机器人hello时收到机器人的私信。
 
-私信中我们不使用ark，而是使用`Embed`。`Embed`也是一种结构化消息，它比ark简单，发送 `Embed` 的函数如下：
+私信中我们不使用ark，而是使用`Embed`。`Embed`也是一种结构化消息，它比Ark简单，发送`Embed`的函数如下：
 
 ```python
 async def send_weather_embed_direct_message(weather_dict, guild_id, user_id):
@@ -405,7 +405,7 @@ async def send_weather_embed_direct_message(weather_dict, guild_id, user_id):
     qqbot.logger.info("/私信推送天气内嵌消息 成功")
 ```
 
-修改 `_message_handler`函数，使他不再发送 `Ark` ，而是在私信里给你发送 `Embed` 
+修改`_message_handler`函数，使机器人不再发送`Ark`，而是在私信里给你发送`Embed` 
 
 ```python
 

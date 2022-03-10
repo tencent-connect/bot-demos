@@ -125,11 +125,11 @@ cd demo
 
 接着，在`demo`文件夹下创建名为 `config.yaml` 的配置文件，填入自己的 `BotAppID` 和 `Bot token`，内容类似下面所示。 也可直接下载 github 仓库里的 `config.example.yaml` 文件，然后自己修改后缀名和内容
 
-    ``` bash
-    token:
-    appid: "123"
-    token: "xxxx"
-    ```
+```
+token:
+  appid: "123"
+  token: "xxxx"
+```
 
 接着，在 `demo` 文件夹下创建一个名为 `robot.py` 的文件：
 

@@ -136,7 +136,7 @@ cd demo
 - 在Linux和mac上，你需要使用 `touch robot.py` 创建一个名为 `robot.py` 的文件。
 - 在windows上，你可以右键-->创建txt文件-->重命名为 `robot.py`
 
-最后，打开 `python` 文件，在开头导入相关的包：
+最后，打开 `robot.py` 文件，在开头导入相关的包：
 
 在Linux和mac上你需要使用 `vim robot.py` 编辑`robot.py` 文件，键盘输入 `i` ,把文件变成可编辑状态，复制粘贴下面代码。`esc` 键退出，键盘输入 `:wq` 保持退出。
 
@@ -442,6 +442,7 @@ from qqbot.core.util.yaml_util import YamlUtil
 from qqbot.model.message import MessageEmbed, MessageEmbedField, MessageEmbedThumbnail, CreateDirectMessageRequest, \
     MessageArk, MessageArkKv, MessageArkObj, MessageArkObjKv
 test_config = YamlUtil.read(os.path.join(os.path.dirname(__file__), "config.yaml"))
+
 async def _message_handler(event, message: qqbot.Message):
     """
     定义事件回调的处理
@@ -474,6 +475,7 @@ async def _create_ark_obj_list(weather_dict) -> List[MessageArkObj]:
                 MessageArkObj(obj_kv=[MessageArkObjKv(key="desc", value="当前温度：" + weather_dict['result']['temperature_curr'])]),
                 MessageArkObj(obj_kv=[MessageArkObjKv(key="desc", value="当前湿度：" + weather_dict['result']['humidity'])])]
     return obj_list
+    
 async def send_weather_ark_message(weather_dict, channel_id, message_id):
     """
     被动回复-子频道推送模版消息
@@ -492,6 +494,7 @@ async def send_weather_ark_message(weather_dict, channel_id, message_id):
     send = qqbot.MessageSendRequest(content="", ark=ark, msg_id=message_id)
     msg_api = qqbot.AsyncMessageAPI(t_token, False)
     await msg_api.post_message(channel_id, send)
+    
 async def send_weather_embed_direct_message(weather_dict, guild_id, user_id):
     """
     被动回复-私信推送天气内嵌消息
@@ -519,6 +522,7 @@ async def send_weather_embed_direct_message(weather_dict, guild_id, user_id):
     direct_message_guild = await dms_api.create_direct_message(CreateDirectMessageRequest(guild_id, user_id))
     await dms_api.post_direct_message(direct_message_guild.guild_id, send)
     qqbot.logger.info("/私信推送天气内嵌消息 成功")
+    
 async def get_weather(city_name: str) -> Dict:
     """
     获取天气信息
@@ -565,6 +569,7 @@ async def get_weather(city_name: str) -> Dict:
             content = await resp.text()
             content_json_obj = json.loads(content)
             return content_json_obj
+            
 async def send_weather_message_by_time():
     """
     任务描述：每天推送一次普通天气消息
@@ -586,6 +591,7 @@ async def send_weather_message_by_time():
     # 如果需要每天都执行，加上下面两句
     t = threading.Timer(86400, send_weather_message_by_time)
     t.start()
+    
 # async的异步接口的使用示例
 if __name__ == "__main__":
     t_token = qqbot.Token(test_config["token"]["appid"], test_config["token"]["token"])

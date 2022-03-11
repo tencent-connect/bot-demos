@@ -105,8 +105,16 @@
 
 ### 安装机器人 SDK
 
+还未安装过机器人 SDK 的同学请运行：
+
 ```bash
 pip install qq-bot
+```
+
+已经安装过机器人 SDK 的同学请运行：**（本 demo 要求 SDK 版本大于 v0.7.4）**
+
+```bash
+pip install qq-bot --upgrade
 ```
 
 同时，由于需要读取 `yaml` 文件的内容，我们也需要安装 `pyyaml`

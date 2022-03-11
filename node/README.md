@@ -6,8 +6,9 @@
 * 5. [机器人主动推送消息](#-3)
 * 6. [机器人指令回复ark消息](#ark)
 * 7. [机器人私信](#-4)
-* 8. [使用指令](#-5)
-* 9. [最佳实践](#-6)
+* 8. [使用小程序](#-5)
+* 9. [使用指令](#-6)
+* 10. [最佳实践](#-7)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -407,7 +408,21 @@ ws.on(AvailableIntentsEventsEnum.AT_MESSAGES, (data: { msg: IMessage }) => {
 
 ![01DDC2277EE8A0EE699C8049E38806A7](https://user-images.githubusercontent.com/33934426/156757976-99464dae-485b-459d-b5b2-dcddbb701746.jpg)
 
-##  8. <a name='-5'></a>使用指令
+##  8. <a name='-5'></a>使用小程序
+
+当用户想要查看全国或者某个省份的天气情况，一次次@机器人就显得十分麻烦，这个时候你可以使用小程序来解决这个问题。了解具体的小程序开发可以看[QQ小程序开发文档](https://q.qq.com/wiki/)，这里只介绍如何通过机器人打开小程序。
+
+机器人打开小程序非常简单，只需要按照下面配置就可以了，不需要增加额外的代码：
+
+<img width="1364" alt="44579997-4462-4a70-a54a-27e919452c89" src="https://user-images.githubusercontent.com/33934426/156758327-bd196a2a-a412-4a86-a64b-e7969b6aa27f.png">
+
+<img width="1214" alt="d29a8298-00fa-4e1f-97df-42c9da485ccf" src="https://user-images.githubusercontent.com/33934426/157860081-3ce1b735-6352-4cbd-bd83-fca813711c10.png">
+
+配置好后，我们@机器人就可以看到我们设置的服务了，点击就可以打开设置的小程序
+
+<img width="436" alt="企业微信截图_4065b3d1-f4fa-4366-86ac-59d98bebcf09" src="https://user-images.githubusercontent.com/33934426/157858657-6693ffbc-f6e1-4c17-bf68-6f7b7d7518c3.png">
+
+##  9. <a name='-6'></a>使用指令
 
 每次@机器人输入指令太麻烦了，有没有简单的方式呢？机器人提供了指令配置，当你输入`/`时就会产出你配置的指令面板。配置方式如下：
 
@@ -420,7 +435,7 @@ ws.on(AvailableIntentsEventsEnum.AT_MESSAGES, (data: { msg: IMessage }) => {
 
 >需要注意，点击指令后输入的内容增加了一个`/`，上面的例子就变成了 `@天气机器人-测试中 /天气`
 
-##  9. <a name='-6'></a>最佳实践
+##  10. <a name='-7'></a>最佳实践
 
 完善`index.ts`代码，同时增加了如下功能：
 

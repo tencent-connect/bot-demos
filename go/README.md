@@ -1,5 +1,5 @@
 <!-- vscode-markdown-toc -->
-* 1. [开发前的准备](#)
+* 1. [开发前的准备](#1)
 * 2. [Go环境搭建](#Go)
 	* 2.1. [linux](#linux)
 	* 2.2. [mac](#mac)
@@ -18,7 +18,7 @@
 	autoSave=true
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
-##  1. <a name=''></a>开发前的准备
+##  1. <a name='1'></a>开发前的准备
 
 如下图，点击 [频道机器人开发官网](https://bot.q.qq.com/open) ，在官网页面点击 **立即注册** 
 
@@ -482,14 +482,17 @@ func main() {
 
 ##  8. <a name='-5'></a>使用小程序
 
-当用户想要查看全国或者某个省份的天气情况，一次次@机器人就显得十分麻烦，这个时候你可以使用小程序来解决这个问题。了解具体的小程序开发可以看【QQ小程序开发文档】(https://q.qq.com/wiki/)，这里只介绍如何通过机器人打开小程序。
+当用户想要查看全国或者某个省份的天气情况，一次次@机器人就显得十分麻烦，这个时候你可以使用小程序来解决这个问题。了解具体的小程序开发可以看[QQ小程序开发文档](https://q.qq.com/wiki/)，这里只介绍如何通过机器人打开小程序。
 
 机器人打开小程序非常简单，只需要按照下面配置就可以了，不需要增加额外的代码：
 
 <img width="1364" alt="44579997-4462-4a70-a54a-27e919452c89" src="https://user-images.githubusercontent.com/33934426/156758327-bd196a2a-a412-4a86-a64b-e7969b6aa27f.png">
 
+<img width="1213" alt="企业微信截图_f83f38cb-6d9f-43ea-b87d-f52848d7b416" src="https://user-images.githubusercontent.com/33934426/157858105-13d2ed19-c520-4ec5-b992-867f13beac79.png">
+
 配置好后，我们@机器人就可以看到我们设置的服务了，点击就可以打开设置的小程序
 
+<img width="436" alt="企业微信截图_4065b3d1-f4fa-4366-86ac-59d98bebcf09" src="https://user-images.githubusercontent.com/33934426/157858657-6693ffbc-f6e1-4c17-bf68-6f7b7d7518c3.png">
 
 ##  9. <a name='-6'></a>使用指令
 
@@ -500,7 +503,8 @@ func main() {
 
 配置好后，当我们输入`/`时，就可以看到配置的面板了
 
-<img width="442" alt="150f1d0d-a34b-4c19-ac14-8dea8afe6171" src="https://user-images.githubusercontent.com/33934426/156758394-8f54b0aa-b932-4993-9da7-e26b2abfb9bc.png">
+<img width="442" alt="企业微信截图_48ea0d26-759d-4c28-bd21-de15dd0f4397" src="https://user-images.githubusercontent.com/33934426/157858746-c371ad3e-1ff3-4fad-b927-3537b0b14c68.png">
+
 
 >需要注意，点击指令后输入的内容增加了一个`/`，上面的例子就变成了 `@天气机器人-测试中 /天气`
 

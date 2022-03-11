@@ -58,7 +58,6 @@ const (
 	CommandShangHai          = "上海"
 	CommandBeiJin            = "北京"
 	CommandDirectChatMsg     = "私信推送"
-	CommandWeatherProgrammer = "全国天气小程序"
 )
 
 var config Config
@@ -134,8 +133,6 @@ func atMessageEventHandler(event *dto.WSPayload, data *dto.WSATMessageData) erro
 			//Embed 传入数据时表示发送的是 Embed
 			api.PostDirectMessage(ctx, directMsg, &dto.MessageToCreate{Embed: createEmbed(webData)})
 		}
-	case CommandWeatherProgrammer:
-
 	}
 	return nil
 }

@@ -1,20 +1,24 @@
 <!-- vscode-markdown-toc -->
-* 1. [开发前的准备](#)
+* 1. [开发前的准备](#1)
 * 2. [Go环境搭建](#Go)
+	* 2.1. [linux](#linux)
+	* 2.2. [mac](#mac)
+	* 2.3. [windows](#windows)
 * 3. [机器人自动回复普通消息](#-1)
 * 4. [获取天气数据](#-2)
 * 5. [机器人主动推送消息](#-3)
 * 6. [机器人指令回复ark消息](#ark)
 * 7. [机器人私信](#-4)
-* 8. [使用指令](#-5)
-* 9. [最佳实践](#-6)
+* 8. [使用小程序](#-5)
+* 9. [使用指令](#-6)
+* 10. [最佳实践](#-7)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
 	autoSave=true
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
-##  1. <a name=''></a>开发前的准备
+##  1. <a name='1'></a>开发前的准备
 
 如下图，点击 [频道机器人开发官网](https://bot.q.qq.com/open) ，在官网页面点击 **立即注册** 
 
@@ -55,7 +59,7 @@
 
 ##  2. <a name='Go'></a>Go环境搭建
 
-### linux
+###  2.1. <a name='linux'></a>linux
 
 在命令行输入如下命令来下载 `Go` 语言压缩包
 
@@ -84,7 +88,7 @@ cd demo
 go mod init demo
 ```
 
-### mac
+###  2.2. <a name='mac'></a>mac
 
 在[Go官网](https://go.dev/dl/)下载需要的mac的版本。下载完成后，直接双击运行下载好的pkg，在弹出的安装页面直接安装就行了。在命令行输入 `go version` 指令检验是否安装完成，如果安装成功，会打印出 `Go` 的版本号。
 
@@ -101,7 +105,7 @@ cd demo
 go mod init demo
 ```
 
-### windows
+###  2.3. <a name='windows'></a>windows
 
 在[Go官网](https://go.dev/dl/)下载需要的windows的版本。下载完成后，直接双击运行下载好的安装包，在弹出的安装页面直接安装就行了。在命令行输入 `go version` 指令检验是否安装完成，如果安装成功，会打印出 `Go` 的版本号。
 
@@ -476,20 +480,35 @@ func main() {
 
 ![01DDC2277EE8A0EE699C8049E38806A7](https://user-images.githubusercontent.com/33934426/156757976-99464dae-485b-459d-b5b2-dcddbb701746.jpg)
 
-##  8. <a name='-5'></a>使用指令
+##  8. <a name='-5'></a>使用小程序
 
-每次@机器人输入指令太麻烦了，有没有简单的方式呢？机器人提供了指令配置，当你输入`/`时就会产出你配置的指令面板。配置方式如下：
+当用户想要查看全国或者某个省份的天气情况，一次次@机器人就显得十分麻烦，这个时候你可以使用小程序来解决这个问题。了解具体的小程序开发可以看[QQ小程序开发文档](https://q.qq.com/wiki/)，这里只介绍如何通过机器人打开小程序。
+
+机器人打开小程序非常简单，只需要按照下面配置就可以了，不需要增加额外的代码：
+
+<img width="1364" alt="44579997-4462-4a70-a54a-27e919452c89" src="https://user-images.githubusercontent.com/33934426/156758327-bd196a2a-a412-4a86-a64b-e7969b6aa27f.png">
+
+<img width="1214" alt="d29a8298-00fa-4e1f-97df-42c9da485ccf" src="https://user-images.githubusercontent.com/33934426/157860081-3ce1b735-6352-4cbd-bd83-fca813711c10.png">
+
+配置好后，我们@机器人就可以看到我们设置的服务了，点击就可以打开设置的小程序
+
+<img width="436" alt="企业微信截图_4065b3d1-f4fa-4366-86ac-59d98bebcf09" src="https://user-images.githubusercontent.com/33934426/157858657-6693ffbc-f6e1-4c17-bf68-6f7b7d7518c3.png">
+
+##  9. <a name='-6'></a>使用指令
+
+每次@机器人输入指令太麻烦了，有没有简单的方式呢？机器人提供了指令配置，当你输入`/`时就会产出你配置的指令面板。上面的服务配置也会在面板中显示。配置方式如下：
 
 <img width="1364" alt="44579997-4462-4a70-a54a-27e919452c89" src="https://user-images.githubusercontent.com/33934426/156758327-bd196a2a-a412-4a86-a64b-e7969b6aa27f.png">
 <img width="1367" alt="ac4d256d-3e31-4e18-9fd2-5a87e4d550a3" src="https://user-images.githubusercontent.com/33934426/156758368-5fb6496f-2ca6-4872-9997-6ebab0181230.png">
 
 配置好后，当我们输入`/`时，就可以看到配置的面板了
 
-<img width="442" alt="150f1d0d-a34b-4c19-ac14-8dea8afe6171" src="https://user-images.githubusercontent.com/33934426/156758394-8f54b0aa-b932-4993-9da7-e26b2abfb9bc.png">
+<img width="442" alt="企业微信截图_48ea0d26-759d-4c28-bd21-de15dd0f4397" src="https://user-images.githubusercontent.com/33934426/157858746-c371ad3e-1ff3-4fad-b927-3537b0b14c68.png">
+
 
 >需要注意，点击指令后输入的内容增加了一个`/`，上面的例子就变成了 `@天气机器人-测试中 /天气`
 
-##  9. <a name='-6'></a>最佳实践
+##  10. <a name='-7'></a>最佳实践
 
 创建`config.yaml`文件保存配置信息，代码如下：
 
@@ -568,7 +587,6 @@ const (
 	CommandShangHai          = "上海"
 	CommandBeiJin            = "北京"
 	CommandDirectChatMsg     = "私信推送"
-	CommandWeatherProgrammer = "全国天气小程序"
 )
 
 var config Config
@@ -644,8 +662,6 @@ func atMessageEventHandler(event *dto.WSPayload, data *dto.WSATMessageData) erro
 			//Embed 传入数据时表示发送的是 Embed
 			api.PostDirectMessage(ctx, directMsg, &dto.MessageToCreate{Embed: createEmbed(webData)})
 		}
-	case CommandWeatherProgrammer:
-
 	}
 	return nil
 }

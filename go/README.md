@@ -488,7 +488,7 @@ func main() {
 
 <img width="1364" alt="44579997-4462-4a70-a54a-27e919452c89" src="https://user-images.githubusercontent.com/33934426/156758327-bd196a2a-a412-4a86-a64b-e7969b6aa27f.png">
 
-<img width="1213" alt="企业微信截图_f83f38cb-6d9f-43ea-b87d-f52848d7b416" src="https://user-images.githubusercontent.com/33934426/157858105-13d2ed19-c520-4ec5-b992-867f13beac79.png">
+<img width="1214" alt="d29a8298-00fa-4e1f-97df-42c9da485ccf" src="https://user-images.githubusercontent.com/33934426/157860081-3ce1b735-6352-4cbd-bd83-fca813711c10.png">
 
 配置好后，我们@机器人就可以看到我们设置的服务了，点击就可以打开设置的小程序
 

@@ -355,9 +355,12 @@ async def send_weather_ark_message(weather_dict, channel_id, message_id):
 再修改`_message_handler`函数发送ark
 
 ```python
-    # 发送消息告知用户
-    weather = await get_weather("深圳")
-    await send_weather_ark_message(weather, message.channel_id, message.id)
+    # 根据指令触发不同的推送消息
+    if "/天气" in content:
+        # 通过空格区分城市参数
+        split = content.split("/天气 ")
+        weather = await get_weather(split[1])
+        await send_weather_ark_message(weather, message.channel_id, message.id)
 ```
 
 效果如下图:
@@ -404,9 +407,11 @@ async def send_weather_embed_direct_message(weather_dict, guild_id, user_id):
 在`_message_handler`中调用刚刚添加的函数，使机器人是在私信里给你发送`Embed`
 
 ```python
-    # 发送消息告知用户
-    weather = await get_weather("深圳")
-    await send_weather_embed_direct_message(weather, message.guild_id, message.author.id)
+if "/私信天气" in content:
+     # 通过空格区分城市参数
+     split = content.split("/私信天气 ")
+     weather = await get_weather(split[1])
+     await send_weather_embed_direct_message(weather, message.guild_id, message.author.id)
 ```
 
 效果图如下：

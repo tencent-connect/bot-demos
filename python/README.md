@@ -58,18 +58,48 @@
 
 **linux**
 
-在命令行依次输入如下命令来下载 `Python3`
-   ```
-   sudo apt-get install software-properties-common
-   sudo add-apt-repository ppa:deadsnakes/ppa
-   sudo apt-get update
-   sudo apt-get install python3.8
-   ```
+在命令行输入 `python --version` 查看是否已经安装过 `Python3`。如果像下面一样，显示的版本为 `Python 3.x.x`，则请跳过安装环节。
+```bash
+python3
+Python 3.9.10
+```
 
-在命令行输入 `python --version` 指令检验是否安装完成，如果安装成功，会打印出 `python` 的版本号
-   ```
-   python --version
-   ```
+下面开始安装 `Python3` ：
+
+首先安装一些必要的依赖包
+```bash
+yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel libpcap-devel xz-devel libffi-devel gcc
+```
+接着，下载 `Python3` 安装包，并解压缩安装包
+```bash
+wget https://www.python.org/ftp/python/3.7.1/Python-3.7.1.tgz
+tar -zxvf Python-3.7.1.tgz
+```
+
+然后，指定 `Python3` 安装路径
+```bash
+cd Python-3.7.1
+./configure --prefix=/root/python37
+```
+
+接着，执行安装 `Python3` 
+```bash
+make
+make install
+```
+
+然后，为 `Python3` 和  `pip3` 添加软链接。软链接类似于 windows 的快捷方式，当你在终端输入 `python3` 时会使用你指定的 `python` 地址
+```bash
+ln -s /root/python37/bin/python3.7 /usr/bin/python3
+ln -s /root/python37/bin/pip3 /usr/bin/pip3
+``` 
+
+**注意：** 这里的 `/root/python37/` 是我的 `Python3` 安装路径，和之前下载的安装包放在同一个位置。运行前请确认一下你的安装路径是否和我一样。
+
+最后，在命令行输入 `python3 --version` 指令检验是否安装完成，如果安装成功，会打印出 `python` 的版本号
+```bash
+python3 --version
+```
 
 **mac**
 

@@ -465,49 +465,54 @@ import json
 import os.path
 import threading
 from typing import Dict, List
+
 import aiohttp
 import qqbot
+
 from qqbot.core.util.yaml_util import YamlUtil
 from qqbot.model.message import MessageEmbed, MessageEmbedField, MessageEmbedThumbnail, CreateDirectMessageRequest, \
     MessageArk, MessageArkKv, MessageArkObj, MessageArkObjKv
+
 test_config = YamlUtil.read(os.path.join(os.path.dirname(__file__), "config.yaml"))
+
 
 async def _message_handler(event, message: qqbot.Message):
     """
     定义事件回调的处理
+
     :param event: 事件类型
     :param message: 事件对象（如监听消息是Message对象）
     """
     msg_api = qqbot.AsyncMessageAPI(t_token, False)
     # 打印返回信息
-    qqbot.logger.info("event %s" % event + ",receive message %s" % message.content)
+    content = message.content
+    qqbot.logger.info("event %s" % event + ",receive message %s" % content)
 
     # 根据指令触发不同的推送消息
-    if "/推送深圳天气" in message.content:
-        weather = await get_weather("深圳")
+    if "/天气" in content:
+        # 通过空格区分城市参数
+        split = content.split("/天气 ")
+        weather = await get_weather(split[1])
         await send_weather_ark_message(weather, message.channel_id, message.id)
 
-    if "/推送上海天气" in message.content:
-        weather = await get_weather("上海")
-        await send_weather_ark_message(weather, message.channel_id, message.id)
-
-    if "/推送北京天气" in message.content:
-        weather = await get_weather("北京")
-        await send_weather_ark_message(weather, message.channel_id, message.id)
-
-    if "/私信推送天气" in message.content:
-        weather = await get_weather("北京")
+    if "/私信天气" in content:
+        split = content.split("/私信天气 ")
+        weather = await get_weather(split[1])
         await send_weather_embed_direct_message(weather, message.guild_id, message.author.id)
+
+
 async def _create_ark_obj_list(weather_dict) -> List[MessageArkObj]:
     obj_list = [MessageArkObj(obj_kv=[MessageArkObjKv(key="desc", value=weather_dict['result']['citynm'] + " " + weather_dict['result']['weather'])]),
                 MessageArkObj(obj_kv=[MessageArkObjKv(key="desc", value="当日温度区间：" + weather_dict['result']['temperature'])]),
                 MessageArkObj(obj_kv=[MessageArkObjKv(key="desc", value="当前温度：" + weather_dict['result']['temperature_curr'])]),
                 MessageArkObj(obj_kv=[MessageArkObjKv(key="desc", value="当前湿度：" + weather_dict['result']['humidity'])])]
     return obj_list
-    
+
+
 async def send_weather_ark_message(weather_dict, channel_id, message_id):
     """
     被动回复-子频道推送模版消息
+
     :param channel_id: 回复消息的子频道ID
     :param message_id: 回复消息ID
     :param weather_dict:天气消息
@@ -523,10 +528,12 @@ async def send_weather_ark_message(weather_dict, channel_id, message_id):
     send = qqbot.MessageSendRequest(content="", ark=ark, msg_id=message_id)
     msg_api = qqbot.AsyncMessageAPI(t_token, False)
     await msg_api.post_message(channel_id, send)
-    
+
+
 async def send_weather_embed_direct_message(weather_dict, guild_id, user_id):
     """
     被动回复-私信推送天气内嵌消息
+
     :param user_id: 用户ID
     :param weather_dict: 天气数据字典
     :param guild_id: 发送私信需要的源频道ID
@@ -545,16 +552,19 @@ async def send_weather_embed_direct_message(weather_dict, guild_id, user_id):
                     MessageEmbedField(name="最高温度：" + weather_dict['result']['temp_high']),
                     MessageEmbedField(name="最低温度：" + weather_dict['result']['temp_low']),
                     MessageEmbedField(name="当前湿度：" + weather_dict['result']['humidity'])]
+
     # 通过api发送回复消息
     send = qqbot.MessageSendRequest(embed=embed, content="")
     dms_api = qqbot.AsyncDmsAPI(t_token, False)
     direct_message_guild = await dms_api.create_direct_message(CreateDirectMessageRequest(guild_id, user_id))
     await dms_api.post_direct_message(direct_message_guild.guild_id, send)
     qqbot.logger.info("/私信推送天气内嵌消息 成功")
-    
+
+
 async def get_weather(city_name: str) -> Dict:
     """
     获取天气信息
+
     :return: 返回天气数据的json对象
     返回示例
     {
@@ -598,7 +608,8 @@ async def get_weather(city_name: str) -> Dict:
             content = await resp.text()
             content_json_obj = json.loads(content)
             return content_json_obj
-            
+
+
 async def send_weather_message_by_time():
     """
     任务描述：每天推送一次普通天气消息
@@ -620,7 +631,8 @@ async def send_weather_message_by_time():
     # 如果需要每天都执行，加上下面两句
     t = threading.Timer(86400, send_weather_message_by_time)
     t.start()
-    
+
+
 # async的异步接口的使用示例
 if __name__ == "__main__":
     t_token = qqbot.Token(test_config["token"]["appid"], test_config["token"]["token"])
@@ -629,8 +641,10 @@ if __name__ == "__main__":
         qqbot.HandlerType.AT_MESSAGE_EVENT_HANDLER, _message_handler
     )
     qqbot.async_listen_events(t_token, False, qqbot_handler)
+
     # 定时推送主动消息
     send_weather_message_by_time()
+
 ```
 
 完整代码看 [天气机器人-Python实现版](https://github.com/tencent-connect/bot-demos/tree/master/python)

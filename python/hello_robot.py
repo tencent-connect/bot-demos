@@ -25,23 +25,18 @@ async def _message_handler(event, message: qqbot.Message):
     """
     msg_api = qqbot.AsyncMessageAPI(t_token, False)
     # 打印返回信息
-    qqbot.logger.info("event %s" % event + ",receive message %s" % message.content)
+    content = message.content
+    qqbot.logger.info("event %s" % event + ",receive message %s" % content)
 
     # 根据指令触发不同的推送消息
-    if "/推送深圳天气" in message.content:
-        weather = await get_weather("深圳")
+    if "/天气" in content:
+        split = content.split("/天气 ")
+        weather = await get_weather(split[1])
         await send_weather_ark_message(weather, message.channel_id, message.id)
 
-    if "/推送上海天气" in message.content:
-        weather = await get_weather("上海")
-        await send_weather_ark_message(weather, message.channel_id, message.id)
-
-    if "/推送北京天气" in message.content:
-        weather = await get_weather("北京")
-        await send_weather_ark_message(weather, message.channel_id, message.id)
-
-    if "/私信推送天气" in message.content:
-        weather = await get_weather("北京")
+    if "/私信天气" in content:
+        split = content.split("/私信天气 ")
+        weather = await get_weather(split[1])
         await send_weather_embed_direct_message(weather, message.guild_id, message.author.id)
 
 

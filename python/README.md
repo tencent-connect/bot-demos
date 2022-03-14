@@ -58,7 +58,7 @@
 
 **linux**
 
-在命令行输入 `python --version` 查看是否已经安装过 `Python3`。如果像下面一样，显示的python版本为 Python 3.x.x，则请跳过 `Python3` 安装环节。
+在命令行输入 `python --version` 查看是否已经安装过 `Python3`。如果像下面一样，显示的版本为 `Python 3.x.x`，则请跳过安装环节。
 ```bash
 python3
 Python 3.9.10
@@ -67,13 +67,12 @@ Python 3.9.10
 下面开始安装 `Python3` ：
 
 首先安装一些必要的依赖包
-   ```bash
-   yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel libpcap-devel xz-devel libffi-devel gcc
-   ```
+```bash
+yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel libpcap-devel xz-devel libffi-devel gcc
+```
 接着，下载 `Python3` 安装包，并解压缩安装包
 ```bash
 wget https://www.python.org/ftp/python/3.7.1/Python-3.7.1.tgz
-
 tar -zxvf Python-3.7.1.tgz
 ```
 

@@ -82,7 +82,7 @@ cd Python-3.7.1
 ./configure --prefix=/root/python37
 ```
 
-接着，执行安装 `Python3` 
+接着，执行安装 `Python3`
 ```bash
 make
 make install
@@ -92,7 +92,7 @@ make install
 ```bash
 ln -s /root/python37/bin/python3.7 /usr/bin/python3
 ln -s /root/python37/bin/pip3 /usr/bin/pip3
-``` 
+```
 
 **注意：** 这里的 `/root/python37/` 是我的 `Python3` 安装路径，和之前下载的安装包放在同一个位置。运行前请确认一下你的安装路径是否和我一样。
 
@@ -490,7 +490,6 @@ if "/私信天气" in content:
 ```python
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import asyncio
 import json
 import os.path
 import threading
@@ -529,6 +528,21 @@ async def _message_handler(event, message: qqbot.Message):
         split = content.split("/私信天气 ")
         weather = await get_weather(split[1])
         await send_weather_embed_direct_message(weather, message.guild_id, message.author.id)
+
+    if "/推送深圳天气" in content:
+        weather = await get_weather('深圳')
+        await send_weather_ark_message(weather, message.channel_id, message.id)
+
+    if "/推送北京天气" in content:
+        weather = await get_weather('北京')
+        await send_weather_ark_message(weather, message.channel_id, message.id)
+
+    if "/推送上海天气" in content:
+        weather = await get_weather('上海')
+        await send_weather_ark_message(weather, message.channel_id, message.id)
+
+    # TODO
+    # if "/全国天气小程序" in content:
 
 
 async def _create_ark_obj_list(weather_dict) -> List[MessageArkObj]:
@@ -677,5 +691,5 @@ if __name__ == "__main__":
 
 ```
 
-完整代码看 [天气机器人-Python实现版](https://github.com/tencent-connect/bot-demos/tree/master/python)
+完整代码看 [天气机器人-Python实现版](https://github.com/tencent-connect/bot-demos/blob/master/python/hello_robot.py)
 

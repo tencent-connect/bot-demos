@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import asyncio
 import json
 import os.path
 import threading
@@ -38,6 +37,11 @@ async def _message_handler(event, message: qqbot.Message):
         split = content.split("/私信天气 ")
         weather = await get_weather(split[1])
         await send_weather_embed_direct_message(weather, message.guild_id, message.author.id)
+
+    if "/当前天气 " in content:
+        split = content.split("/当前天气 ")
+        weather = await get_weather(split[1])
+        await send_weather_ark_message(weather, message.channel_id, message.id)
 
     elif "/未来天气 " in content:
         split = content.split("/未来天气 ")
@@ -420,6 +424,7 @@ async def get_aqi(citi_name: str) -> Dict:
             content = await resp.text()
             content_json_obj = json.loads(content)
             return content_json_obj
+
 
 async def send_weather_message_by_time():
     """

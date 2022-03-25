@@ -2,3 +2,6 @@ config.yaml
 
 .idea
 /python/qqbot.log
+/python/exercise/qqbot.log
+/qqbot.log
+*.pyc

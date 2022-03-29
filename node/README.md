@@ -334,40 +334,6 @@ ws.on(AvailableIntentsEventsEnum.AT_MESSAGES, (data: { msg: IMessage }) => {
 
 私信中我们不使用ark，代替的而是使用`Embed`。`Embed`也是一种结构化消息，它比ark简单，代码如下：
 
-```go
-//获取 Embed
-func createEmbed(weather *WeatherResp) *dto.Embed {
-	return &dto.Embed{
-		Title: weather.ResultData.CityNm + " " + weather.ResultData.Weather,
-		Thumbnail: dto.MessageEmbedThumbnail{
-			URL: weather.ResultData.WeatherIcon,
-		},
-		Fields: []*dto.EmbedField{
-			{
-				Name: weather.ResultData.Days + " " + weather.ResultData.Week,
-			},
-			{
-				Name: "当日温度区间：" + weather.ResultData.Temperature,
-			},
-			{
-				Name: "当前温度：" + weather.ResultData.TemperatureCurr,
-			},
-			{
-				Name: "最高温度：" + weather.ResultData.TempHigh,
-			},
-			{
-				Name: "最低温度：" + weather.ResultData.TempLow,
-			},
-			{
-				Name: "当前湿度：" + weather.ResultData.Humidity,
-			},
-		},
-	}
-}
-```
-
-发送私信代码如下：
-
 ```ts
 function createEmbedMessage(title: string, thumbnail: string, items: string[]) {
     const message: Embed = { title, thumbnail: { url: thumbnail }, fields: [] };

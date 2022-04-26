@@ -1,18 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import asyncio
 import json
 import os.path
-import threading
+import time
+from multiprocessing import Process
 from typing import Dict, List
 
 import aiohttp
 import qqbot
+import schedule
 
 from qqbot.core.util.yaml_util import YamlUtil
 from qqbot.model.message import MessageEmbed, MessageEmbedField, MessageEmbedThumbnail, CreateDirectMessageRequest, \
     MessageArk, MessageArkKv, MessageArkObj, MessageArkObjKv
 
 test_config = YamlUtil.read(os.path.join(os.path.dirname(__file__), "config.yaml"))
+public_channel_id = ""
 
 
 async def _message_handler(event, message: qqbot.Message):
@@ -426,37 +430,44 @@ async def get_aqi(citi_name: str) -> Dict:
             return content_json_obj
 
 
-async def send_weather_message_by_time():
+def set_schedule_task():
+    schedule.every(10).seconds.do(send_weather_message_by_time)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+
+def send_weather_message_by_time():
     """
     任务描述：每天推送一次普通天气消息
     """
+    loop = asyncio.get_event_loop()
+    token = qqbot.Token(test_config["token"]["appid"], test_config["token"]["token"])
+
+    # 获取频道列表，取首个频道的首个子频道推送
+    global public_channel_id
+    if not public_channel_id:
+        user_api = qqbot.AsyncUserAPI(token, False)
+        guild_id = loop.run_until_complete(user_api.me_guilds())[0].id
+        channel_api = qqbot.AsyncChannelAPI(token, False)
+        public_channel_id = loop.run_until_complete(channel_api.get_channels(guild_id))[0].id
+
     # 获取天气数据
-    weather_dict = await get_weather("深圳")
-    # 获取频道列表都取首个频道的首个子频道推送
-    user_api = qqbot.AsyncUserAPI(t_token, False)
-    guilds = await user_api.me_guilds()
-    guilds_id = guilds[0].id
-    channel_api = qqbot.AsyncChannelAPI(t_token, False)
-    channels = await channel_api.get_channels(guilds_id)
-    channels_id = channels[0].id
+    weather_dict = loop.run_until_complete(get_weather("深圳"))
     # 推送消息
-    temperature = "当日温度区间：" + weather_dict['result']['temperature']
-    send = qqbot.MessageSendRequest(content=temperature)
-    msg_api = qqbot.AsyncMessageAPI(t_token, False)
-    await msg_api.post_message(channels_id, send)
-    # 如果需要每天都执行，加上下面两句
-    t = threading.Timer(86400, send_weather_message_by_time)
-    t.start()
+    content = "当日温度区间：" + weather_dict['result']['temperature']
+    send = qqbot.MessageSendRequest(content=content)
+    msg_api = qqbot.AsyncMessageAPI(token, False)
+    loop.run_until_complete(msg_api.post_message("2568610", send))
 
 
 # async的异步接口的使用示例
 if __name__ == "__main__":
-    t_token = qqbot.Token(test_config["token"]["appid"], test_config["token"]["token"])
+    # 定时推送主动消息
+    Process(target=set_schedule_task).start()
     # @机器人后推送被动消息
+    t_token = qqbot.Token(test_config["token"]["appid"], test_config["token"]["token"])
     qqbot_handler = qqbot.Handler(
         qqbot.HandlerType.AT_MESSAGE_EVENT_HANDLER, _message_handler
     )
     qqbot.async_listen_events(t_token, False, qqbot_handler)
-
-    # 定时推送主动消息
-    send_weather_message_by_time()

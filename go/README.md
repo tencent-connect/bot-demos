@@ -141,6 +141,7 @@ import (
 	"github.com/tencent-connect/botgo"
 	"github.com/tencent-connect/botgo/dto"
 	"github.com/tencent-connect/botgo/token"
+	"github.com/tencent-connect/botgo/event"
 	"github.com/tencent-connect/botgo/websocket"
 )
 
@@ -154,7 +155,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	var atMessage websocket.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
+	var atMessage event.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
 
 		if strings.HasSuffix(data.Content, "> hello") { // 如果@机器人并输入 hello 则回复 你好。
 			api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID, Content: "你好"})
@@ -249,7 +250,7 @@ func getWeatherByCity(cityName string) *WeatherResp {
 当@机器人`hello`指令时，获取深圳的天气数据并返回
 
 ```go	
-var atMessage websocket.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
+var atMessage event.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
 	if strings.HasSuffix(data.Content, "> hello") {
 		weatherData := getWeatherByCity("深圳")
 		api.PostMessage(ctx, data.ChannelID, &dto.MessageToCreate{MsgID: data.ID,
@@ -296,7 +297,7 @@ func main() {
 	timer.AddFunc("0 53 15 * * ?", activeMsgPush) 
 	timer.Start()
 
-	var atMessage websocket.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
+	var atMessage event.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
 		channelId = data.ChannelID //当@机器人时，保存ChannelId
 		...
 	}
@@ -323,7 +324,7 @@ func main() {
 	
     ...
 
-	var atMessage websocket.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
+	var atMessage event.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
 		channelId = data.ChannelID
 		if strings.HasSuffix(data.Content, "> hello") {
 			weatherData := getWeatherByCity("深圳")
@@ -451,7 +452,7 @@ func main() {
 
 	...
 
-	var atMessage websocket.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
+	var atMessage event.ATMessageEventHandler = func(event *dto.WSPayload, data *dto.WSATMessageData) error {
 		channelId = data.ChannelID
 		if strings.HasSuffix(data.Content, "> hello") { //发送私信消息
 			var webData *WeatherResp = getWeatherByCity("深圳")
@@ -547,6 +548,7 @@ import (
 	"github.com/robfig/cron"
 	"github.com/tencent-connect/botgo"
 	"github.com/tencent-connect/botgo/dto"
+	"github.com/tencent-connect/botgo/event"
 	"github.com/tencent-connect/botgo/dto/message"
 	"github.com/tencent-connect/botgo/openapi"
 	"github.com/tencent-connect/botgo/token"
@@ -631,8 +633,8 @@ func main() {
 	timer.AddFunc("0 0 9 * * ?", timerHandler)
 	timer.Start()
 
-	var atMessage websocket.ATMessageEventHandler = atMessageEventHandler //@事件处理
-	var guildEvent websocket.GuildEventHandler = guildHandler             //频道事件处理
+	var atMessage event.ATMessageEventHandler = atMessageEventHandler //@事件处理
+	var guildEvent event.GuildEventHandler = guildHandler             //频道事件处理
 	intent := websocket.RegisterHandlers(atMessage, guildEvent)           // 注册socket消息处理
 	botgo.NewSessionManager().Start(ws, token, &intent)                   // 启动socket监听
 }

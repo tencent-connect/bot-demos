@@ -13,6 +13,7 @@ import (
 	"github.com/tencent-connect/botgo/dto/message"
 	"github.com/tencent-connect/botgo/openapi"
 	"github.com/tencent-connect/botgo/token"
+	"github.com/tencent-connect/botgo/event"
 	"github.com/tencent-connect/botgo/websocket"
 
 	yaml "gopkg.in/yaml.v2"
@@ -66,8 +67,8 @@ func main() {
 	timer.AddFunc("0 0 9 * * ?", timerHandler)
 	timer.Start()
 
-	var atMessage websocket.ATMessageEventHandler = atMessageEventHandler //@事件处理
-	var guildEvent websocket.GuildEventHandler = guildHandler             //频道事件处理
+	var atMessage event.ATMessageEventHandler = atMessageEventHandler //@事件处理
+	var guildEvent event.GuildEventHandler = guildHandler             //频道事件处理
 	intent := websocket.RegisterHandlers(atMessage, guildEvent)           // 注册socket消息处理
 	botgo.NewSessionManager().Start(ws, token, &intent)                   // 启动socket监听
 }

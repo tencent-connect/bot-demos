@@ -39,8 +39,8 @@ export class Robot {
 
     // 监听用户at机器人消息
     setAtMessagesHandler(handler: (message: IMessage) => void) {
-        this.ws.on(AvailableIntentsEventsEnum.AT_MESSAGES, (data: any) => {
-            console.log('[AT_MESSAGES] 事件接收 :', data);
+        this.ws.on(AvailableIntentsEventsEnum.PUBLIC_GUILD_MESSAGES, (data: any) => {
+            console.log('[PUBLIC_GUILD_MESSAGES] 事件接收 :', data);
             handler(data.msg);
         });
     }

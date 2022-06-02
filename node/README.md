@@ -115,7 +115,7 @@ import { AvailableIntentsEventsEnum, createOpenAPI, createWebsocket, IMessage } 
 const botConfig = {
     appID: 'APPID', // 申请机器人时获取到的机器人 BotAppID
     token: 'TOKEN', // 申请机器人时获取到的机器人 BotToken
-    intents: [AvailableIntentsEventsEnum.AT_MESSAGES], // 事件订阅,用于开启可接收的消息类型
+    intents: [AvailableIntentsEventsEnum.PUBLIC_GUILD_MESSAGES], // 事件订阅,用于开启可接收的消息类型
     sandbox: false, // 沙箱支持，可选，默认false. v2.7.0+
 };
 
@@ -125,7 +125,7 @@ const client = createOpenAPI(botConfig);
 const ws = createWebsocket(botConfig);
 
 // 注册用户 at 机器人消息事件
-ws.on(AvailableIntentsEventsEnum.AT_MESSAGES, (data: { msg: IMessage }) => {
+ws.on(AvailableIntentsEventsEnum.PUBLIC_GUILD_MESSAGES, (data: { msg: IMessage }) => {
     const content = data.msg.content;
     if (content.includes('hello')) {
         client.messageApi.postMessage(data.msg.channel_id, { content: '你好' }).then((res) => {
@@ -227,7 +227,7 @@ function getWeatherByCity(city: string) {
 
 ```ts	
 // 注册用户 at 机器人消息事件
-ws.on(AvailableIntentsEventsEnum.AT_MESSAGES, (data: { msg: IMessage }) => {
+ws.on(AvailableIntentsEventsEnum.PUBLIC_GUILD_MESSAGES, (data: { msg: IMessage }) => {
     const content = data.msg.content;
     if (content.includes('hello')) {
         getWeatherByCity('深圳').then(weatherData => {
@@ -265,7 +265,7 @@ import * as cron from 'node-cron';
 let subWeatherChannelID: string;
 
 // 注册用户 at 机器人消息事件
-ws.on(AvailableIntentsEventsEnum.AT_MESSAGES, (data: { msg: IMessage }) => {
+ws.on(AvailableIntentsEventsEnum.PUBLIC_GUILD_MESSAGES, (data: { msg: IMessage }) => {
     subWeatherChannelID = data.msg.channel_id;
     // ...
 });
@@ -305,7 +305,7 @@ function createArk24Message(title: string, subtitle: string, desc: string, img?:
 }
 
 // 注册用户 at 机器人消息事件
-ws.on(AvailableIntentsEventsEnum.AT_MESSAGES, (data: { msg: IMessage }) => {
+ws.on(AvailableIntentsEventsEnum.PUBLIC_GUILD_MESSAGES, (data: { msg: IMessage }) => {
     subWeatherChannelID = data.msg.channel_id;
     const content = data.msg.content;
     if (content.includes('hello')) {
@@ -350,7 +350,7 @@ async function getDirectMessageGuildID(sourceGuildID: string, authorID: string) 
 }
 
 // 注册用户 at 机器人消息事件
-ws.on(AvailableIntentsEventsEnum.AT_MESSAGES, (data: { msg: IMessage }) => {
+ws.on(AvailableIntentsEventsEnum.PUBLIC_GUILD_MESSAGES, (data: { msg: IMessage }) => {
     subWeatherChannelID = data.msg.channel_id;
     const content = data.msg.content;
     if (content.includes('hello')) {

@@ -5,7 +5,7 @@ import * as cron from 'node-cron';
 const botConfig = {
     appID: 'APPID', // 申请机器人时获取到的机器人 BotAppID
     token: 'TOKEN', // 申请机器人时获取到的机器人 BotToken
-    intents: [AvailableIntentsEventsEnum.AT_MESSAGES], // 事件订阅,用于开启可接收的消息类型
+    intents: [AvailableIntentsEventsEnum.PUBLIC_GUILD_MESSAGES], // 事件订阅,用于开启可接收的消息类型
     sandbox: false, // 沙箱支持，可选，默认false. v2.7.0+
 };
 
@@ -103,7 +103,7 @@ function postWeatherToDirectMessage(city: string, fromMessage: IMessage) {
 }
 
 // 注册用户 at 机器人消息事件
-ws.on(AvailableIntentsEventsEnum.AT_MESSAGES, (data: { msg: IMessage }) => {
+ws.on(AvailableIntentsEventsEnum.PUBLIC_GUILD_MESSAGES, (data: { msg: IMessage }) => {
     subWeatherChannelID = data.msg.channel_id;
     const content = data.msg.content;
     if (content.includes('深圳')) {

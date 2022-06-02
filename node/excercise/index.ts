@@ -6,7 +6,7 @@ import * as cron from 'node-cron';
 const botConfig = {
     appID: '替换成自己的APPID', // 申请机器人时获取到的机器人 BotAppID
     token: '替换成自己的TOKEN', // 申请机器人时获取到的机器人 BotToken
-    intents: [AvailableIntentsEventsEnum.AT_MESSAGES, AvailableIntentsEventsEnum.DIRECT_MESSAGE], // 事件订阅,用于开启可接收的消息类型
+    intents: [AvailableIntentsEventsEnum.PUBLIC_GUILD_MESSAGES, AvailableIntentsEventsEnum.DIRECT_MESSAGE], // 事件订阅,用于开启可接收的消息类型
     sandbox: false, // 沙箱支持，可选，默认false. v2.7.0+
 };
 
